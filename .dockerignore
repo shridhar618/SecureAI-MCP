@@ -1,0 +1,17 @@
+.git
+.gitignore
+backend/.env
+backend/.venv
+backend/__pycache__/
+frontend/node_modules
+frontend/dist
+backend/venv
+backend/venv311
+backend/instance
+backend/qdrant_data
+backend/*.db
+**/__pycache__
+**/.pytest_cache
+**/.DS_Store
+backend/.env.*
+!backend/.env.example

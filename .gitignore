@@ -1,0 +1,51 @@
+node_modules/
+node_modules*/
+node_modules*
+dist/
+build/
+.next/
+.cache/
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Virtual environments
+venv/
+venv311/
+.venv/
+
+# Generated databases and runtime files
+*.db
+*.sqlite
+*.sqlite3
+instance/
+backend/qdrant_data/
+
+.env
+.env.*
+backend/instance/*.db
+!.env.example
+!backend/.env.example
+
+# OS / editor junk
+.DS_Store
+._*
+Thumbs.db
+desktop.ini
+*.icloud
+*.icloud-stale/
+.idea/
+*.swp
+*~
+
+# Logs and test/coverage output
+*.log
+npm-debug.log*
+.coverage
+htmlcov/
+coverage/

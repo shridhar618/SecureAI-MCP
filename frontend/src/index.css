@@ -1,0 +1,257 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ==========================================================================
+   SecureAI theme tokens — ported from ShareLock (Revelio).
+   Light: warm paper + sage green. Dark: ink black + warm paper text.
+   Values are RGB channels so Tailwind opacity modifiers keep working.
+   ========================================================================== */
+:root,
+:root[data-theme='light'] {
+  --bg-900: 250 246 233;   /* #faf6e9 page */
+  --bg-800: 255 253 246;   /* #fffdf6 panels */
+  --bg-700: 243 245 231;   /* #f3f5e7 raised */
+  --bg-600: 233 238 216;   /* #e9eed8 */
+  --ink: 17 23 14;         /* #11170e — body & headings */
+  --tone-100: 17 23 14;
+  --tone-200: 24 31 20;
+  --tone-300: 32 41 27;
+  --tone-400: 40 50 34;    /* #283222 — secondary text */
+  --tone-500: 52 62 45;    /* #343e2d — muted text */
+  --tone-600: 74 84 66;    /* #4a5442 — hints, placeholders */
+  --tone-700: 104 113 95;
+  --line: 213 225 185;     /* #d5e1b9 */
+  --accent: 66 99 52;      /* #426334 */
+  --accent-dim: 63 107 52;
+  --accent-soft: 160 200 120; /* #a0c878 */
+  --success: 44 112 60;
+  --warn: 146 98 18;
+  --danger: 160 52 36;
+  --purple: 92 76 140;
+  --info: 54 88 118;
+  --highlight: 255 255 255;
+  --shadow: 82 118 66;
+  --glass: 255 253 246;
+  --orb-a: #b7d894;
+  --orb-b: #a3c97c;
+  --orb-c: 148 189 108;
+  --headline-2: #2a4d20;
+  --eyebrow: 66 99 52;
+  /* Primary button (sage pill in light) */
+  --btn-a: #a0c878;
+  --btn-b: #91b96a;
+  --btn-hover-a: #add184;
+  --btn-hover-b: #a0c878;
+  --btn-ink: #24311e;
+  --btn-badge: #24311e;
+  --btn-badge-ink: #e8f2d6;
+  --btn-glow: 82 118 66;
+  --rule: linear-gradient(90deg, #a0c878, #7fa95b 55%, #ddb55f);
+  --title-fill: rgb(var(--ink));
+  color-scheme: light;
+}
+
+:root[data-theme='dark'] {
+  /* Revelio ink + ember (ShareLock dark theme) */
+  --bg-900: 9 9 9;         /* #090909 */
+  --bg-800: 19 18 17;      /* #131211 warm ink panel */
+  --bg-700: 25 24 22;      /* #191816 */
+  --bg-600: 34 32 30;      /* #22201e */
+  --ink: 238 232 220;      /* #eee8dc */
+  --tone-100: 238 232 220;
+  --tone-200: 222 214 200;
+  --tone-300: 203 193 178;
+  --tone-400: 194 185 170; /* #c2b9aa */
+  --tone-500: 138 131 121; /* #8a8379 */
+  --tone-600: 110 104 96;
+  --tone-700: 80 76 70;
+  --line: 57 54 50;        /* #393632 */
+  --accent: 239 85 57;     /* #ef5539 ember */
+  --accent-dim: 214 74 46;
+  --accent-soft: 203 189 167; /* #cbbda7 warm beige: pills, borders, eyebrows */
+  --eyebrow: 203 189 167;
+  --success: 143 190 140;
+  --warn: 221 181 95;
+  --danger: 255 93 108;    /* #ff5d6c */
+  --purple: 183 169 146;   /* #b7a992 */
+  --info: 183 169 146;
+  --highlight: 255 255 255;
+  --shadow: 0 0 0;
+  --glass: 19 18 17;
+  --orb-a: #d6502f;
+  --orb-b: #c4402a;
+  --orb-c: 180 58 37;
+  --headline-2: #fff3e3;
+  --btn-a: #ef5539;
+  --btn-b: #ef5539;
+  --btn-hover-a: #ff674b;
+  --btn-hover-b: #ff674b;
+  --btn-ink: #170a07;
+  --btn-badge: #170a07;
+  --btn-badge-ink: #ef5539;
+  --btn-glow: 239 85 57;
+  --rule: linear-gradient(90deg, #ef5539, #b7a992);
+  --title-fill: linear-gradient(180deg, #eee8dc, #b7a992);
+  color-scheme: dark;
+}
+
+html.theme-anim,
+html.theme-anim *,
+html.theme-anim *::before,
+html.theme-anim *::after {
+  transition: background-color 0.7s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.7s cubic-bezier(0.4, 0, 0.2, 1), color 0.7s cubic-bezier(0.4, 0, 0.2, 1), fill 0.7s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+@layer base {
+  * { box-sizing: border-box; }
+
+  html, body, #root {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    background-color: rgb(var(--bg-900));
+    background-image:
+      radial-gradient(1000px 540px at 82% -12%, rgb(var(--accent-soft) / 0.12), transparent 62%),
+      linear-gradient(rgb(var(--accent-soft) / 0.07) 1px, transparent 1px),
+      linear-gradient(90deg, rgb(var(--accent-soft) / 0.07) 1px, transparent 1px);
+    background-size: auto, 44px 44px, 44px 44px;
+    background-attachment: fixed;
+    color: rgb(var(--ink));
+    font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+
+  h1, h2, h3 {
+    font-family: 'Syne', 'Inter', sans-serif;
+    letter-spacing: -0.02em;
+  }
+
+  ::selection { background: rgb(var(--accent-soft) / 0.45); }
+
+  input, textarea, select { color: rgb(var(--ink)); }
+  select option { background: rgb(var(--bg-800)); color: rgb(var(--ink)); }
+
+  :focus-visible { outline: 2px solid rgb(var(--accent)); outline-offset: 2px; }
+
+  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar-thumb { background: rgb(var(--line)); border-radius: 999px; border: 2px solid rgb(var(--bg-900)); }
+  ::-webkit-scrollbar-track { background: transparent; }
+}
+
+@layer utilities {
+  .glass {
+    background: rgb(var(--glass) / 0.82);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgb(var(--line) / 0.75);
+  }
+
+  .glass-light {
+    background: rgb(var(--bg-700) / 0.7);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgb(var(--line) / 0.7);
+  }
+
+  .glow-text {
+    color: rgb(var(--accent));
+  }
+
+  .glow-border {
+    border-color: rgb(var(--accent));
+    box-shadow: 0 0 0 3px rgb(var(--accent-soft) / 0.25);
+  }
+
+  .grid-bg {
+    background-image:
+      linear-gradient(rgb(var(--accent-soft) / 0.08) 1px, transparent 1px),
+      linear-gradient(90deg, rgb(var(--accent-soft) / 0.08) 1px, transparent 1px);
+    background-size: 32px 32px;
+  }
+
+  .scan-line {
+    background: none;
+    pointer-events: none;
+  }
+}
+
+/* Typing indicator */
+.typing-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgb(var(--accent));
+  animation: typing 1.2s ease-in-out infinite;
+}
+.typing-dot:nth-child(2) { animation-delay: 0.2s; }
+.typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes typing {
+  0%, 100% { opacity: 0.2; transform: scale(0.8); }
+  50% { opacity: 1; transform: scale(1.1); }
+}
+
+/* Paper grain overlay */
+.noise::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.4;
+}
+
+/* Primary actions: sage pill with dark ink text, as in ShareLock. */
+.bg-accent.text-bg-900,
+.bg-accent .text-bg-900 {
+  color: var(--btn-ink);
+}
+.bg-accent.text-bg-900 {
+  background: linear-gradient(135deg, var(--btn-a), var(--btn-b));
+}
+
+/* Shared round theme toggle */
+.theme-toggle {
+  display: inline-grid;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 999px;
+  border: 1px solid rgb(var(--accent-soft) / 0.8);
+  background: rgb(var(--bg-800) / 0.7);
+  color: rgb(var(--ink));
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+.theme-toggle:hover { background: rgb(var(--accent-soft) / 0.2); transform: rotate(-12deg); }
+
+/* ── Chatbot palette (scoped to the chat page) ───────────────────────────────
+   Built only from the app theme: sage on paper (light), ember + warm beige on
+   ink (dark). Status colours are used only for decisions/risk. Dark mode has
+   no green: "allowed / low risk" uses the theme's warm beige. */
+:root[data-theme='dark'] .chat-scope {
+  --success: 203 189 167;
+}
+.chat-scope .chat-primary {
+  background: linear-gradient(135deg, var(--btn-a), var(--btn-b));
+  color: var(--btn-ink);
+  box-shadow: 0 10px 26px -14px rgb(var(--btn-glow) / 0.7);
+}
+.chat-scope .chat-primary svg { color: var(--btn-ink); }
+.chat-scope button.chat-primary { transition: transform 0.15s ease, filter 0.15s ease; }
+.chat-scope button.chat-primary:hover:not(:disabled) {
+  background: linear-gradient(135deg, var(--btn-hover-a), var(--btn-hover-b));
+  transform: translateY(-1px);
+}
+.chat-scope .chat-accent-text { color: rgb(var(--accent)); }
+.chat-scope .chat-badge {
+  background: rgb(var(--accent) / 0.1);
+  border: 1px solid rgb(var(--accent) / 0.3);
+  color: rgb(var(--accent));
+}
