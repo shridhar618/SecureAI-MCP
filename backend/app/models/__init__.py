@@ -18,6 +18,7 @@ from app.models.admin_action import AdminAction
 from app.models.risk_configuration import RiskConfiguration
 from app.models.security_event import SecurityEvent
 from app.models.notification import Notification
+from app.models.mcp_token import McpToken
 from app.models.ghost_investigation import (
     GhostInvestigation,
     GhostInvestigationEvent,
@@ -27,6 +28,7 @@ from app.models.ghost_investigation import (
 )
 
 __all__ = [
+    "McpToken",
     "Role",
     "User",
     "AuditLog",
