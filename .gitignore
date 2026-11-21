@@ -49,3 +49,6 @@ npm-debug.log*
 .coverage
 htmlcov/
 coverage/
+
+# Real MCP incident-response config (may reference secrets via env)
+backend/mcp_servers.json

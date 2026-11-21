@@ -18,6 +18,8 @@ Pillow==10.4.0
 # opencv-contrib-python includes CascadeClassifier + FaceDetectorYN (YuNet)
 # for the built-in face attendance feature.  No dlib or face_recognition needed.
 opencv-contrib-python>=4.10.0
+# Model Context Protocol SDK: incident-response automation (GitHub/Slack/calendar)
+mcp>=2.3,<3
 pytest==8.3.2
 
 # OPTIONAL feature packs (the app runs without them and degrades gracefully):
