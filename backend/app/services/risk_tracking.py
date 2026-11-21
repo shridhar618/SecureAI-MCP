@@ -27,6 +27,7 @@ from app import db
 from app.models.governance_case import GovernanceCase
 from app.models.risk_event import RiskEvent
 from app.services.governance import DEFAULT_RISK_CONFIG
+from app.services.incident_response import dispatch_incident
 from app.services.notifications import emit_pending, notify_admins
 
 
@@ -74,6 +75,7 @@ def record_risk_event(user, audit_log, result, risk_config=None):
     db.session.flush()  # assign event.id before we might reference it
 
     pending_notifications = []
+    opened_case = None
 
     # Demo 2: immediate alert on any single high-risk request.
     if result.risk_level == "high":
@@ -101,6 +103,7 @@ def record_risk_event(user, audit_log, result, risk_config=None):
         db.session.add(new_case)
         db.session.flush()
         event.case_id = new_case.id
+        opened_case = new_case
 
         pending_notifications += notify_admins(
             "governance_case_opened",
@@ -116,4 +119,11 @@ def record_risk_event(user, audit_log, result, risk_config=None):
     # Emitted only after the commit succeeds, so an admin is never alerted
     # about a case that failed to persist.
     emit_pending(pending_notifications)
+
+    # Optional MCP incident response (GitHub issue / Slack / calendar). Off
+    # unless configured; never raises, so it cannot break the request.
+    if result.risk_level == "high":
+        dispatch_incident("high_risk_request", user, event, case=existing_case, reason=result.reason)
+    if opened_case is not None:
+        dispatch_incident("governance_case_opened", user, event, case=opened_case, reason=result.reason)
     return event

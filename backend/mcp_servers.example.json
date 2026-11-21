@@ -1,0 +1,59 @@
+{
+  "mode": "dry_run",
+  "timeout_seconds": 30,
+  "servers": {
+    "github": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-github"],
+      "env": { "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_TOKEN}" }
+    },
+    "slack": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-slack"],
+      "env": { "SLACK_BOT_TOKEN": "${SLACK_BOT_TOKEN}", "SLACK_TEAM_ID": "${SLACK_TEAM_ID}" }
+    },
+    "calendar": {
+      "command": "npx",
+      "args": ["-y", "@cocal/google-calendar-mcp"],
+      "env": { "GOOGLE_OAUTH_CREDENTIALS": "${GOOGLE_OAUTH_CREDENTIALS}" }
+    }
+  },
+  "actions": [
+    {
+      "name": "github_issue",
+      "server": "github",
+      "tool": "create_issue",
+      "on": ["governance_case_opened"],
+      "arguments": {
+        "owner": "${INCIDENT_GITHUB_OWNER}",
+        "repo": "${INCIDENT_GITHUB_REPO}",
+        "title": "{title}",
+        "body": "{body}",
+        "labels": ["security-incident"]
+      }
+    },
+    {
+      "name": "slack_notify_manager",
+      "server": "slack",
+      "tool": "slack_post_message",
+      "on": ["high_risk_request", "governance_case_opened"],
+      "arguments": {
+        "channel_id": "${INCIDENT_SLACK_CHANNEL_ID}",
+        "text": "{summary}"
+      }
+    },
+    {
+      "name": "calendar_review",
+      "server": "calendar",
+      "tool": "create-event",
+      "on": ["governance_case_opened"],
+      "arguments": {
+        "calendarId": "primary",
+        "summary": "Review {case_code}: {username}",
+        "description": "{body}",
+        "start": "{review_start}",
+        "end": "{review_end}"
+      }
+    }
+  ]
+}
