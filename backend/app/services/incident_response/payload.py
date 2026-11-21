@@ -3,6 +3,8 @@
 import json
 from datetime import UTC, datetime, timedelta
 
+from app.services.rule_names import rule_names
+
 
 class _SafeDict(dict):
     def __missing__(self, key):
@@ -16,19 +18,6 @@ def _next_business_day_start(now):
     return day.replace(hour=10, minute=0, second=0, microsecond=0)
 
 
-def _rule_names(factors):
-    """Rule names only -- factor 'detail' fields can echo user text."""
-    names = []
-    for factor in factors or []:
-        if isinstance(factor, dict):
-            name = factor.get("rule") or factor.get("name")
-        else:
-            name = str(factor)
-        if name and name not in names:
-            names.append(str(name)[:80])
-    return names[:10]
-
-
 def build_incident(kind, user, risk_event, case=None, reason=None, now=None):
     """Context dict used to fill the {placeholders} in action arguments.
 
@@ -40,7 +29,8 @@ def build_incident(kind, user, risk_event, case=None, reason=None, now=None):
         factors = json.loads(risk_event.factors) if risk_event.factors else []
     except (TypeError, ValueError):
         factors = []
-    rules = _rule_names(factors)
+    # Names only: factors also hold validator notes that quote the user's text.
+    rules = rule_names(factors, max_len=80)[:10]
     review_start = _next_business_day_start(now)
     review_end = review_start + timedelta(minutes=30)
 

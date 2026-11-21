@@ -16,6 +16,8 @@ def app(tmp_path, monkeypatch):
     monkeypatch.setenv("AI_PROVIDER", "mock")
     monkeypatch.setenv("FACE_BACKEND", "test")
     monkeypatch.setenv("DEBUG", "0")
+    # A developer's local backend/mcp_servers.json must not leak into tests.
+    monkeypatch.setenv("INCIDENT_MCP_MODE", "off")
 
     from app.services import rate_limit
     rate_limit._attempts.clear()

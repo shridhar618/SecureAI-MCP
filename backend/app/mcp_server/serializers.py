@@ -10,13 +10,12 @@ Free text that could be attacker-influenced is wrapped as
 """
 
 import json
-import re
 
 from app.services.governance import _policy_evidence_for  # same engine as the API
+from app.services.rule_names import rule_names  # noqa: F401  (shared redaction)
 
 MAX_TEXT = 500
 _AUDIT_META_KEYS = ("tool", "status", "args_summary", "reason_code", "target")
-_NOTE_RE = re.compile(r"^(Detected .+? signal)\b")
 
 
 def untrusted(text, cap: int = MAX_TEXT):
@@ -37,29 +36,6 @@ def _json_list(raw):
     except (TypeError, ValueError):
         return []
     return value if isinstance(value, list) else []
-
-
-def rule_names(items) -> list[str]:
-    """Reduce stored factors/triggered_rules to rule names only.
-
-    Validator notes embed matched keywords from the prompt/response
-    ("matched: 'password'"), so they are cut down to their category, and
-    the intent-analysis note (which quotes signals) is dropped.
-    """
-    out = []
-    for item in items or []:
-        if isinstance(item, dict):
-            item = item.get("rule") or item.get("label")
-        if not isinstance(item, str):
-            continue
-        if item.startswith("Intent analysis"):
-            continue
-        match = _NOTE_RE.match(item)
-        name = match.group(1) if match else item
-        name = name[:120]
-        if name not in out:
-            out.append(name)
-    return out
 
 
 def policy_citations(rules: list[str]) -> list[str]:
