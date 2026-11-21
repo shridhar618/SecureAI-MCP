@@ -127,3 +127,44 @@ def record_risk_event(user, audit_log, result, risk_config=None):
     if opened_case is not None:
         dispatch_incident("governance_case_opened", user, event, case=opened_case, reason=result.reason)
     return event
+
+
+def open_manual_case(user, opened_by, reason):
+    """Opens a GovernanceCase on an administrator's explicit request.
+
+    Mirrors the automatic path: the case starts "open" and only a human
+    AdminAction can restrict anything. This never touches the user's access.
+    Returns the new case, or None if the user already has an unresolved one.
+    """
+    from app.models.admin_action import AdminAction
+
+    existing = GovernanceCase.query.filter(
+        GovernanceCase.user_id == user.id, GovernanceCase.status != "resolved"
+    ).first()
+    if existing:
+        return None
+
+    last_event = (
+        RiskEvent.query.filter_by(user_id=user.id).order_by(RiskEvent.created_at.desc()).first()
+    )
+    case = GovernanceCase(
+        user_id=user.id,
+        status="open",
+        trigger=f"Opened manually by {opened_by.username}: {reason}",
+        risk_score_at_open=last_event.cumulative_score if last_event else 0.0,
+    )
+    db.session.add(case)
+    db.session.flush()
+    db.session.add(AdminAction(
+        case_id=case.id, admin_id=opened_by.id, action_type="note",
+        note=f"Case opened by {opened_by.username}: {reason}",
+    ))
+    pending = notify_admins(
+        "governance_case_opened",
+        f"New governance case {case.case_code()} opened for {user.username} by {opened_by.username}.",
+        related_case_id=case.id,
+        commit=False,
+    )
+    db.session.commit()
+    emit_pending(pending)
+    return case
