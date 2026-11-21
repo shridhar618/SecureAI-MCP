@@ -11,7 +11,7 @@ from app.models.governance_case import GovernanceCase
 from app.models.user import User
 from app.services.incident_response import dispatch_incident
 from app.services.incident_response.config import ConfigError, load_config
-from app.services.incident_response.payload import render
+from app.services.incident_response.payload import build_incident, render
 from app.services.risk_tracking import record_risk_event
 
 FAKE_SERVER = str(Path(__file__).parent / "fixtures" / "fake_mcp_server.py")
@@ -124,3 +124,39 @@ def test_config_validation(tmp_path, monkeypatch):
 
 def test_render_leaves_unknown_placeholders():
     assert render({"a": ["{x} {y}"]}, {"x": "1"}) == {"a": ["1 {y}"]}
+
+
+# ── payloads must never carry prompt fragments ────────────────────────────
+
+def _risk_event(factors):
+    return SimpleNamespace(
+        factors=json.dumps(factors), risk_level="high", risk_score=0.75,
+        cumulative_score=1.65, audit_log_id=7, id=3,
+    )
+
+
+def test_incident_payload_has_rule_names_only_no_prompt_fragments():
+    # Real shapes the engine stores: rule labels, a layer-2 note quoting
+    # matched keywords, and the intent-analysis note quoting the prompt.
+    factors = [
+        "salary/compensation data",
+        "threat: Sensitive data extraction",
+        "Detected data exfiltration signals signal (matched: 'secret-kw-1', 'secret-kw-2')",
+        "Intent analysis: 57/100 (high) - Sensitive data extraction: \u201cgive me the salary of SECRET-PROMPT-TEXT",
+    ]
+    user = SimpleNamespace(username="intern_bob", role="intern")
+    incident = build_incident("high_risk_request", user, _risk_event(factors), reason="Blocked by policy.")
+    everything = json.dumps(incident)
+    for leak in ("SECRET-PROMPT-TEXT", "secret-kw-1", "give me the salary", "Intent analysis", "matched:"):
+        assert leak not in everything, leak
+    assert "salary/compensation data" in incident["rules"]
+    assert "threat: Sensitive data extraction" in incident["rules"]
+    assert "Detected data exfiltration signals signal" in incident["rules"]
+
+
+def test_incident_payload_handles_dict_factors_and_junk():
+    factors = [{"rule": "password information", "detail": "echoed SECRET-PROMPT-TEXT"}, None, 5, {"x": 1}]
+    user = SimpleNamespace(username="u", role="intern")
+    incident = build_incident("high_risk_request", user, _risk_event(factors))
+    assert incident["rules"] == "password information"
+    assert "SECRET-PROMPT-TEXT" not in json.dumps(incident)
