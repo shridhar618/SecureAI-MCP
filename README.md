@@ -1,6 +1,6 @@
 # SecureAI — AI Governance & Accountability Platform
 
-An internal organizational platform that makes AI use **role-aware, policy-checked, auditable and accountable**. MCA final-year capstone.
+**Make AI use role-aware, policy-checked, auditable and accountable.** SecureAI sits between employees and AI assistants: every request is authorized by role, evaluated by a transparent rule engine, grounded in company policy, scored for cumulative risk, and recorded in a tamper-evident audit trail. Consequential decisions always stay with a human administrator. Governance data is also exposed to AI clients and incident tools through the Model Context Protocol (MCP). MCA final-year capstone.
 
 > Built on top of the open-source *SentinelSystem* codebase (governed chat, work management, attendance, messaging). This project adds the governance core: permissions, rule-based compliance, risk scoring, cumulative escalation, governance cases, alerts, audit, policy management, and the employee/admin dashboards.
 
@@ -17,6 +17,14 @@ Organizations have employees with different roles and permissions, but general-p
 7. Supporting modules: face-recognition attendance, Kanban tasks, KPI/workload, private messaging, Ghost Mode (honeypot simulation plus database-backed interactive investigations of real suspicious users, driven by contextual threat detection) and Attack Simulation (safe, labelled simulation).
 
 **Principles:** RBAC authorizes · the rule engine decides · policy documents provide evidence · the LLM explains · audit records · humans decide consequences.
+
+## MCP integration
+SecureAI uses the [Model Context Protocol](https://modelcontextprotocol.io) in both directions:
+
+| Direction | What it does | Docs |
+|---|---|---|
+| **MCP server** (`python -m app.mcp_server`) | Lets Claude Desktop, Claude Code and other MCP clients query governance data (risk events, cases, audit log, policy search) with the same RBAC as the web API. Token-authenticated, deny-by-default per-tool permissions, every call audited, no raw prompts or personal data returned. | [docs/MCP_SERVER.md](docs/MCP_SERVER.md) |
+| **MCP client** (incident response) | On a high-risk request or a new governance case, can open a GitHub issue and post to Slack. Off by default; `dry_run` mode previews every call without sending. Payloads carry rule names and scores only, never prompt text. | [docs/MCP_INCIDENT_RESPONSE.md](docs/MCP_INCIDENT_RESPONSE.md) |
 
 ## Tech stack
 Backend: Python, Flask, Flask-SQLAlchemy, Flask-JWT-Extended, Flask-SocketIO · Frontend: React, Vite, Tailwind, Framer Motion, Recharts · DB: SQLite · AI/RAG: sentence-transformers, Qdrant, and a configured Ollama, Gemini, or OpenAI LLM · Vision: OpenCV (YuNet/Haar detection + LBPH embeddings) · Tests: pytest · CI: GitHub Actions.
