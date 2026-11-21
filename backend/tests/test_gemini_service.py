@@ -35,7 +35,7 @@ class _FakeModel:
         self.fail_models = fail_models or set()
         self.response = response or _FakeResponse(text="ok")
 
-    def generate_content(self, prompt, generation_config=None):
+    def generate_content(self, prompt, generation_config=None, request_options=None):
         if self.model_name in self.fail_models:
             raise RuntimeError(f"boom:{self.model_name}")
         return self.response
@@ -111,7 +111,7 @@ def test_generate_json_retries_plain_text_when_json_mode_response_is_unusable(mo
             self.model_name = model_name
             self.system_instruction = system_instruction
 
-        def generate_content(self, prompt, generation_config=None):
+        def generate_content(self, prompt, generation_config=None, request_options=None):
             if generation_config and generation_config.get("response_mime_type") == "application/json":
                 return _FakeResponse(text='{"reason":"truncated"')
             return _FakeResponse(
