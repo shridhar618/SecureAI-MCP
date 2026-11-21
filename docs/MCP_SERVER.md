@@ -74,8 +74,11 @@ Deny by default. Permissions come from `services/permissions.py`.
 Every call by an identified caller writes an `AuditLog` row: `event_type="mcp_tool_call"`,
 `resource=<tool>`, `status` allowed/denied, metadata with the tool and an argument
 summary (lengths and usernames/enums only, no free text). Denials are logged
-(rate-limit denials at most once per minute per caller). If the audit write fails the
-call is refused. Calls with an unknown token have no user to attach (`audit_logs.user_id`
+(rate-limit denials at most once per minute per caller). Calls the MCP SDK rejects before
+any handler runs (missing required arguments, unknown tool names) are audited too, with
+`reason_code` `schema_invalid` / `unknown_tool` (unknown tools are recorded as
+`unknown_tool`; attacker-supplied names and values are never stored), and count toward the
+rate limit. If the audit write fails the call is refused. Calls with an unknown token have no user to attach (`audit_logs.user_id`
 is NOT NULL) and go to the server log only.
 
 ## Data minimisation

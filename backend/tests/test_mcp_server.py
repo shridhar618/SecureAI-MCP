@@ -250,6 +250,41 @@ def test_wrong_types_rejected_by_schema(app, world):
     assert call(app, world["root_admin"], "get_case", {"case_code": "../etc/passwd"}).is_error
 
 
+def test_schema_rejected_and_unknown_tool_calls_are_audited(app, world):
+    # Missing required arguments are rejected by the SDK before any handler runs.
+    assert call(app, world["bob"], "search_policies", {}).is_error
+    assert call(app, world["root_admin"], "get_case", {}).is_error
+    assert call(app, world["bob"], "drop_all_tables", {"x": "y" * 500}).is_error       # unknown tool
+    # Wrong types reach our handler, which rejects and audits them itself.
+    assert call(app, world["bob"], "get_risk_events", {"limit": "many"}).is_error
+    rows = mcp_rows(app)
+    assert [(r[0], r[1], r[2]) for r in rows] == [
+        ("bob", "search_policies", "denied"), ("root_admin", "get_case", "denied"),
+        ("bob", "unknown_tool", "denied"), ("bob", "get_risk_events", "denied")]
+    codes = [json.loads(r[3])["reason_code"] for r in rows]
+    assert codes == ["schema_invalid", "schema_invalid", "unknown_tool", "invalid_args"]
+    # attacker-controlled values are summarised, never stored verbatim
+    assert "yyyy" not in rows[2][3] and "many" not in rows[3][3]
+
+
+def test_no_double_audit_for_handler_level_denials(app, world):
+    call(app, world["bob"], "get_audit_log")                       # permission denial inside handler
+    call(app, world["bob"], "get_risk_events", {"limit": 5000})    # invalid value inside handler
+    assert len(mcp_rows(app)) == 2
+
+
+def test_unauthenticated_schema_invalid_call_writes_no_audit_row(app, world):
+    assert call(app, None, "get_case", {}).is_error
+    assert mcp_rows(app) == []
+
+
+def test_schema_rejections_count_toward_rate_limit(app, world, monkeypatch):
+    monkeypatch.setattr(ratelimit, "MAX_CALLS", 2)
+    for _ in range(6):
+        call(app, world["bob"], "get_case", {})
+    assert len(mcp_rows(app)) == 3  # 2 allowed-through audits + 1 rate-limit denial, not 6
+
+
 def test_limit_cap_enforced(app, world):
     with app.app_context():
         bob = User.query.filter_by(username="bob").first()
