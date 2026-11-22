@@ -139,6 +139,7 @@ def create_app():
     from app.routes.user_management import user_management_bp
     from app.ghost_routes import ghost_bp
     from app.attack_routes import attack_bp
+    from app.routes.incident_settings import incident_settings_bp
     from app.routes.mcp_activity import mcp_activity_bp
     from app.routes.mcp_tokens import mcp_tokens_bp
 
@@ -164,6 +165,7 @@ def create_app():
     app.register_blueprint(user_management_bp, url_prefix="/api")
     app.register_blueprint(ghost_bp, url_prefix="/api")
     app.register_blueprint(attack_bp, url_prefix="/api")
+    app.register_blueprint(incident_settings_bp, url_prefix="/api")
     app.register_blueprint(mcp_activity_bp, url_prefix="/api")
     app.register_blueprint(mcp_tokens_bp, url_prefix="/api")
 

@@ -21,6 +21,7 @@ import WorkBoardPage from './pages/WorkBoardPage'
 import WorkEscalationsPage from './pages/WorkEscalationsPage'
 import AdminCreateUserPage from './pages/AdminCreateUserPage'
 import UserManagementPage from './pages/UserManagementPage'
+import IncidentAlertsPage from './pages/IncidentAlertsPage'
 import McpActivityPage from './pages/McpActivityPage'
 import McpTokensPage from './pages/McpTokensPage'
 import BlockchainExplorer from './modules/explorer'
@@ -114,6 +115,12 @@ function AppRoutes() {
         <Route path="user-management" element={
           <ProtectedRoute adminOnly>
             <UserManagementPage />
+          </ProtectedRoute>
+        } />
+
+        <Route path="incident-alerts" element={
+          <ProtectedRoute adminOnly>
+            <IncidentAlertsPage />
           </ProtectedRoute>
         } />
 

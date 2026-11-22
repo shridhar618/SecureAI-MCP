@@ -20,6 +20,7 @@ import {
   Users,
   ShieldAlert,
   Blocks,
+  BellRing,
   Activity,
   KeyRound,
   X,
@@ -96,6 +97,7 @@ export default function Layout() {
         ? [
             { to: '/user-management', icon: Users, label: 'Users & Logins', desc: 'Login history & user CRUD' },
             { to: '/user-access', icon: UserPlus, label: 'User Access', desc: 'Create accounts' },
+            { to: '/incident-alerts', icon: BellRing, label: 'Incident Alerts', desc: 'GitHub & Slack via MCP' },
             { to: '/mcp-tokens', icon: KeyRound, label: 'MCP Tokens', desc: 'AI client access' },
           ]
         : [],
