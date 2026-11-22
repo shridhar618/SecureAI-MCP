@@ -36,6 +36,9 @@ EVENT_TYPES = [
     "ghost_investigation",
     # Incident-alert (MCP client) configuration changes.
     "incident_config_change",
+    # MCP server token administration.
+    "mcp_token_created",
+    "mcp_token_revoked",
 ]
 
 

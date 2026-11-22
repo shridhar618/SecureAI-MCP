@@ -21,6 +21,8 @@ import {
   ShieldAlert,
   Blocks,
   BellRing,
+  Activity,
+  KeyRound,
   X,
 } from 'lucide-react'
 import { getRoleMeta, getRolePillClass, isManagerRole } from '../utils/roles'
@@ -83,6 +85,7 @@ export default function Layout() {
             { to: '/dashboard', icon: LayoutDashboard, label: 'Dashboard', desc: 'Audit & analytics' },
             { to: '/governance-cases', icon: ShieldAlert, label: 'Governance Cases', desc: 'Review & escalations' },
             { to: '/blockchain-explorer', icon: Blocks, label: 'Blockchain Explorer', desc: 'Audit hash chain' },
+            { to: '/mcp-activity', icon: Activity, label: 'MCP Activity', desc: 'AI client usage' },
             { to: '/ghost-mode', icon: Shield, label: 'Ghost Mode', desc: 'Stealth monitoring' },
             { to: '/attack-sim', icon: Shield, label: 'Attack Simulator', desc: 'Security testing' },
           ]
@@ -95,6 +98,7 @@ export default function Layout() {
             { to: '/user-management', icon: Users, label: 'Users & Logins', desc: 'Login history & user CRUD' },
             { to: '/user-access', icon: UserPlus, label: 'User Access', desc: 'Create accounts' },
             { to: '/incident-alerts', icon: BellRing, label: 'Incident Alerts', desc: 'GitHub & Slack via MCP' },
+            { to: '/mcp-tokens', icon: KeyRound, label: 'MCP Tokens', desc: 'AI client access' },
           ]
         : [],
     },

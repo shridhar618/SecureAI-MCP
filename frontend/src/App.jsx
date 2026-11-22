@@ -22,6 +22,8 @@ import WorkEscalationsPage from './pages/WorkEscalationsPage'
 import AdminCreateUserPage from './pages/AdminCreateUserPage'
 import UserManagementPage from './pages/UserManagementPage'
 import IncidentAlertsPage from './pages/IncidentAlertsPage'
+import McpActivityPage from './pages/McpActivityPage'
+import McpTokensPage from './pages/McpTokensPage'
 import BlockchainExplorer from './modules/explorer'
 import { isManagerRole } from './utils/roles'
 
@@ -119,6 +121,18 @@ function AppRoutes() {
         <Route path="incident-alerts" element={
           <ProtectedRoute adminOnly>
             <IncidentAlertsPage />
+          </ProtectedRoute>
+        } />
+
+        <Route path="mcp-activity" element={
+          <ProtectedRoute adminOnly>
+            <McpActivityPage />
+          </ProtectedRoute>
+        } />
+
+        <Route path="mcp-tokens" element={
+          <ProtectedRoute adminOnly>
+            <McpTokensPage />
           </ProtectedRoute>
         } />
 

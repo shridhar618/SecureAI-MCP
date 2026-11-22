@@ -140,6 +140,8 @@ def create_app():
     from app.ghost_routes import ghost_bp
     from app.attack_routes import attack_bp
     from app.routes.incident_settings import incident_settings_bp
+    from app.routes.mcp_activity import mcp_activity_bp
+    from app.routes.mcp_tokens import mcp_tokens_bp
 
     app.register_blueprint(auth_bp, url_prefix="/api/auth")
     app.register_blueprint(admin_bp, url_prefix="/api")
@@ -164,6 +166,8 @@ def create_app():
     app.register_blueprint(ghost_bp, url_prefix="/api")
     app.register_blueprint(attack_bp, url_prefix="/api")
     app.register_blueprint(incident_settings_bp, url_prefix="/api")
+    app.register_blueprint(mcp_activity_bp, url_prefix="/api")
+    app.register_blueprint(mcp_tokens_bp, url_prefix="/api")
 
     @app.get("/api/health")
     def health_check():
