@@ -20,6 +20,7 @@ import {
   Users,
   ShieldAlert,
   Blocks,
+  Activity,
   KeyRound,
   X,
 } from 'lucide-react'
@@ -83,6 +84,7 @@ export default function Layout() {
             { to: '/dashboard', icon: LayoutDashboard, label: 'Dashboard', desc: 'Audit & analytics' },
             { to: '/governance-cases', icon: ShieldAlert, label: 'Governance Cases', desc: 'Review & escalations' },
             { to: '/blockchain-explorer', icon: Blocks, label: 'Blockchain Explorer', desc: 'Audit hash chain' },
+            { to: '/mcp-activity', icon: Activity, label: 'MCP Activity', desc: 'AI client usage' },
             { to: '/ghost-mode', icon: Shield, label: 'Ghost Mode', desc: 'Stealth monitoring' },
             { to: '/attack-sim', icon: Shield, label: 'Attack Simulator', desc: 'Security testing' },
           ]
