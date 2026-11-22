@@ -34,6 +34,9 @@ EVENT_TYPES = [
     "security_event",
     # Interactive Ghost Mode administrator actions.
     "ghost_investigation",
+    # MCP server token administration.
+    "mcp_token_created",
+    "mcp_token_revoked",
 ]
 
 
