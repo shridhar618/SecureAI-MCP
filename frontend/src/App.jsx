@@ -21,6 +21,7 @@ import WorkBoardPage from './pages/WorkBoardPage'
 import WorkEscalationsPage from './pages/WorkEscalationsPage'
 import AdminCreateUserPage from './pages/AdminCreateUserPage'
 import UserManagementPage from './pages/UserManagementPage'
+import McpTokensPage from './pages/McpTokensPage'
 import BlockchainExplorer from './modules/explorer'
 import { isManagerRole } from './utils/roles'
 
@@ -112,6 +113,12 @@ function AppRoutes() {
         <Route path="user-management" element={
           <ProtectedRoute adminOnly>
             <UserManagementPage />
+          </ProtectedRoute>
+        } />
+
+        <Route path="mcp-tokens" element={
+          <ProtectedRoute adminOnly>
+            <McpTokensPage />
           </ProtectedRoute>
         } />
 

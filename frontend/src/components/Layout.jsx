@@ -20,6 +20,7 @@ import {
   Users,
   ShieldAlert,
   Blocks,
+  KeyRound,
   X,
 } from 'lucide-react'
 import { getRoleMeta, getRolePillClass, isManagerRole } from '../utils/roles'
@@ -93,6 +94,7 @@ export default function Layout() {
         ? [
             { to: '/user-management', icon: Users, label: 'Users & Logins', desc: 'Login history & user CRUD' },
             { to: '/user-access', icon: UserPlus, label: 'User Access', desc: 'Create accounts' },
+            { to: '/mcp-tokens', icon: KeyRound, label: 'MCP Tokens', desc: 'AI client access' },
           ]
         : [],
     },
